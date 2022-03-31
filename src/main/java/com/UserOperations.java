@@ -163,28 +163,7 @@ public class UserOperations extends Base {
                 .extract().response();
     }
 
-    @Step("GetListOrdersUnauthorizedUser {getListOrdersUser}")
-    public Response getListOrdersRegistratedUser() {
-        return given()
-                .spec(getBaseSpec())
-                .when()
-                .get("orders")
-                .then()
-                .extract().response();
-    }
-
-    @Step("GetListOrdersAuthorizedUser {getListOrdersUser}")
-    public Response getListOrdersAuthorizedUser(String TokenUser) {
-        return given()
-                .spec(getBaseSpec())
-                .auth().oauth2(TokenUser.substring(7))
-                .when()
-                .get("orders")
-                .then()
-                .extract().response();
-    }
-
-    public void delete() {
+     public void delete() {
         if (Tokens.getAccessToken() == null) {
             return;
         }
@@ -196,36 +175,5 @@ public class UserOperations extends Base {
                 .then()
                 .statusCode(202);
     }
-
-    public Response createOrder() {
-        return given()
-                .spec(Base.getBaseSpec())
-                .when()
-                .post("orders")
-                .then()
-                .extract().response();
-    }
-
-    public Response createOrderWithIngredients(IngredientsForOrder ingredientsForOrder) {
-        return given()
-                .spec(Base.getBaseSpec())
-                .body(ingredientsForOrder)
-                .when()
-                .post("orders")
-                .then()
-                .extract().response();
-
-    }
-
-    public Response createOrderWithInccorectHashIngredients(IngredientsForOrderIncorrectHash ingredientsForOrderIncorrectHash) {
-        return given()
-                .spec(Base.getBaseSpec())
-                .body(ingredientsForOrderIncorrectHash)
-                .when()
-                .post("orders")
-                .then()
-                .extract().response();
-
-    }
-}
+  }
 

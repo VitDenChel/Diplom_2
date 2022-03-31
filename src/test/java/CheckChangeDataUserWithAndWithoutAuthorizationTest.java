@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CheckChangeListDataUserWithAuthorizationStepTest {
+public class CheckChangeDataUserWithAndWithoutAuthorizationTest {
     private UserOperations userOperations;
 
     @Before
@@ -21,6 +21,18 @@ public class CheckChangeListDataUserWithAuthorizationStepTest {
         Response createUniqueUserResponse = userOperations.create(userForRegistration);
         String TokenUser = createUniqueUserResponse.jsonPath().get("accessToken");
         userOperations.delete();
+    }
+
+    @Test
+    public void checkChangeDataUserWithoutAuthorizationStepTest() {
+        UserForRegistration userForRegistration = UserForRegistration.getRandom();
+        Response userRegistrationResponse = userOperations.create(userForRegistration);
+        String TokenUser = userRegistrationResponse.jsonPath().get("accessToken");
+        Response getModifiedDataRegisteredUser = userOperations.changeDataRegistratedUserWithoutAuthorization(userForRegistration);
+
+        Assert.assertEquals("Data user have been changed without authorization", 401, getModifiedDataRegisteredUser.statusCode());
+        Assert.assertEquals("Wrong error message", "false", getModifiedDataRegisteredUser.jsonPath().getString("success"));
+        Assert.assertEquals("Wrong error message", "You should be authorised", getModifiedDataRegisteredUser.jsonPath().getString("message"));
     }
 
     @Test

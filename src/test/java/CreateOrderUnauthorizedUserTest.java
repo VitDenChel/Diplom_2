@@ -7,10 +7,12 @@ import org.junit.Test;
 
 public class CreateOrderUnauthorizedUserTest {
     private UserOperations userOperations;
+    private OrderOperations orderOperations;
 
     @Before
     public void setUp() {
         userOperations = new UserOperations();
+        orderOperations = new OrderOperations();
     }
 
     @After
@@ -26,7 +28,7 @@ public class CreateOrderUnauthorizedUserTest {
         UserForRegistration userForRegistration = UserForRegistration.getRandom();
         IngredientsForOrder ingredientsForOrder = IngredientsForOrder.IngredientsForOrder();
         Response userRegistrationResponse = userOperations.create(userForRegistration);
-        Response checkCreateOrderResponse = userOperations.createOrderWithIngredients(ingredientsForOrder);
+        Response checkCreateOrderResponse = orderOperations.createOrderWithIngredients(ingredientsForOrder);
 
         Assert.assertEquals("Order was created without authorization", 404, checkCreateOrderResponse.statusCode());
         Assert.assertEquals("Wrong error message", "false", checkCreateOrderResponse.jsonPath().getString("success"));
@@ -37,7 +39,7 @@ public class CreateOrderUnauthorizedUserTest {
     public void newOrderWasCreatedByUnauthorizedUserWithoutIngredientsTest() {
         UserForRegistration userForRegistration = UserForRegistration.getRandom();
         Response userRegistrationResponse = userOperations.create(userForRegistration);
-        Response orderByUnauthorizedUserWithoutIngredients =  userOperations.createOrder();
+        Response orderByUnauthorizedUserWithoutIngredients =  orderOperations.createOrder();
 
         Assert.assertEquals("Two equal users can be created", 400, orderByUnauthorizedUserWithoutIngredients.statusCode());
         Assert.assertEquals("Wrong error message", "false", orderByUnauthorizedUserWithoutIngredients.jsonPath().getString("success"));
@@ -49,7 +51,7 @@ public class CreateOrderUnauthorizedUserTest {
         UserForRegistration userForRegistration = UserForRegistration.getRandom();
         IngredientsForOrderIncorrectHash ingredientsForOrderIncorrectHash = IngredientsForOrderIncorrectHash.IngredientsForOrderIncorrectHash();
         Response userRegistrationResponse = userOperations.create(userForRegistration);
-        Response checkCreateOrderResponse = userOperations.createOrderWithInccorectHashIngredients(ingredientsForOrderIncorrectHash);
+        Response checkCreateOrderResponse = orderOperations.createOrderWithInccorectHashIngredients(ingredientsForOrderIncorrectHash);
 
         Assert.assertEquals("Order was created", 500, checkCreateOrderResponse.statusCode());
     }
